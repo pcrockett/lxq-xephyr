@@ -12,25 +12,13 @@ readonly SCRIPT_DIR=$(dirname "$(readlink -f "${0}")")
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}/_util.sh"
 
-function find_subcommand_scripts() {
-    find "${LXQ_SCRIPT_DIR}" -maxdepth 1 -mindepth 1 -regex ".*/lxq-xephyr-[a-z]+\.sh"
-
-    plugin_dirs=$(find -L "${LXQ_PLUGIN_DIR}" -maxdepth 1 -mindepth 1 -type d)
-    for plugin_dir in $plugin_dirs
-    do
-        plugin_src_dir="${plugin_dir}/src"
-        if [ -d "${plugin_src_dir}" ]; then
-            find -L "${plugin_src_dir}" -maxdepth 1 -mindepth 1 -regex ".*/lxq-xephyr-[a-z]+\.sh"
-        fi
-    done
-}
-
-subcommand_scripts=$(find_subcommand_scripts)
+subcommand_regex="/lxq-xephyr-([a-z]+)\\.sh$"
+readarray -t subcommand_scripts < <(find_subcommand_scripts "${subcommand_regex}")
 
 declare -A subcommands
-for script in $subcommand_scripts
+for script in "${subcommand_scripts[@]}"
 do
-    if [[ $script =~ /lxq-xephyr-([a-z]+)\.sh$ ]]; then
+    if [[ $script =~ ${subcommand_regex} ]]; then
         subcom="${BASH_REMATCH[1]}"
         subcommands["${subcom}"]="${script}"
     else
@@ -54,7 +42,7 @@ function show_usage() {
     printf "\n" >&2
     printf "Available commands:\n" >&2
 
-    for s in $subcommand_scripts
+    for s in "${subcommand_scripts[@]}"
     do
         print_subcommand_summary "${s}"
     done
