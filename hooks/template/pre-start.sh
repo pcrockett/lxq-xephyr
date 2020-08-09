@@ -28,4 +28,4 @@ fi
 
 xephyr_display=$(find_unused_display_num)
 generate_xeph_config "${xephyr_display}" > "${template_config_file}"
-run_xephyr "${xephyr_display}" "${LXQ_TEMPLATE_NAME}"
+run_xephyr "${xephyr_display}" "${LXQ_TEMPLATE_NAME} template"

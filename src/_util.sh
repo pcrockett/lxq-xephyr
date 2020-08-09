@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-export readonly LXQ_XEPH_MIN_DISPLAY_NUM="20"
-
-readonly LXQ_XEPH_SCRIPT_DIR=$(dirname "$(readlink -f "${0}")")
+LXQ_XEPH_SCRIPT_DIR=$(dirname "$(readlink -f "${0}")")
 export LXQ_XEPH_SCRIPT_DIR
 
-readonly LXQ_XEPH_REPO_DIR=$(dirname "${LXQ_XEPH_SCRIPT_DIR}")
+LXQ_XEPH_REPO_DIR=$(dirname "${LXQ_XEPH_SCRIPT_DIR}")
 export LXQ_XEPH_REPO_DIR
 
+LXQ_XEPH_RUN_DIR="/run/user/$UID/lxq/plugin/xephyr"
+export LXQ_XEPH_RUN_DIR
+
 function find_unused_display_num() {
-    xephyr_display="${LXQ_XEPH_MIN_DISPLAY_NUM}"
+    xephyr_display="20"
     while [ -e "/tmp/.X11-unix/X${xephyr_display}" ]; do
         xephyr_display=$((xephyr_display+1))
         if [ "$xephyr_display" -ge 256 ]; then # TODO: What is the max display number?
@@ -45,6 +46,11 @@ function run_xephyr() {
 
     Xephyr -br -ac -noreset -screen "${LXQ_XEPH_SCREEN_SIZE}" -title "${ARG_WINDOW_TITLE}" ":${ARG_DISPLAY_NUM}" &
 
+    xeph_pid="${!}"
+    xeph_run_dir="${LXQ_XEPH_RUN_DIR}/${ARG_WINDOW_TITLE}"
+    test -d "${xeph_run_dir}" || mkdir --parent "${xeph_run_dir}"
+    echo "${xeph_pid}" > "${xeph_run_dir}/pid"
+
     attempts=0
     while [ ! -e "/tmp/.X11-unix/X${ARG_DISPLAY_NUM}" ]; do
         attempts=$((attempts+1))
@@ -55,3 +61,15 @@ function run_xephyr() {
     done
 }
 export -f run_xephyr
+
+function stop_xephyr() {
+    is_set "${1+x}" || panic "Expecting window title as only parameter"
+    ARG_WINDOW_TITLE="${1}"
+
+    xeph_run_dir="${LXQ_XEPH_RUN_DIR}/${ARG_WINDOW_TITLE}"
+    original_pid=$(cat "${xeph_run_dir}/pid")
+    kill "${original_pid}"
+
+    rm --recursive -- "${xeph_run_dir}"
+}
+export -f stop_xephyr

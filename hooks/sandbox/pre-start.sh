@@ -31,4 +31,4 @@ fi
 
 xephyr_display=$(find_unused_display_num)
 generate_xeph_config "${xephyr_display}" > "${sandbox_config_file}"
-run_xephyr "${xephyr_display}" "${LXQ_SANDBOX_NAME}"
+run_xephyr "${xephyr_display}" "${LXQ_SANDBOX_NAME} sandbox"
