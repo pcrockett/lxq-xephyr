@@ -18,7 +18,7 @@ function find_unused_display_num() {
         fi
     done
 
-    echo xephyr_display
+    echo "${xephyr_display}"
 }
 export -f find_unused_display_num
 
