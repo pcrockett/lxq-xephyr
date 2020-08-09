@@ -54,7 +54,7 @@ is_set "${ARG_TEMPLATE_NAME+x}" || panic "No template name specified."
 template_config_dir="${LXQ_REPO_DIR}/templates/${ARG_TEMPLATE_NAME}/config.d"
 test -d "${template_config_dir}" || panic "Template \"${ARG_TEMPLATE_NAME}\" does not exist."
 
-xephyr_config="${template_config_dir}/50_xephyr.conf"
+xephyr_config="${template_config_dir}/${LXQ_XEPH_CONF_FILE_NAME}"
 test ! -f "${xephyr_config}" || panic "Template \"${ARG_TEMPLATE_NAME}\" has already been initialized."
 
 # Just need to create the file to mark it as a xephyr template

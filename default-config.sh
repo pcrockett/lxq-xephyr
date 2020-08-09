@@ -6,3 +6,4 @@ set -Eeuo pipefail
 # to override.
 
 export LXQ_XEPH_SCREEN_SIZE="1200x800"
+export LXQ_XEPH_CONF_FILE_NAME="50_xephyr.conf"
