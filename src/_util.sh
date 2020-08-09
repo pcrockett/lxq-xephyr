@@ -67,6 +67,8 @@ function stop_xephyr() {
     ARG_WINDOW_TITLE="${1}"
 
     xeph_run_dir="${LXQ_XEPH_RUN_DIR}/${ARG_WINDOW_TITLE}"
+    test -d "${xeph_run_dir}" || return 0 # Xephyr wasn't running in the first place; common for non-gui containers
+
     original_pid=$(cat "${xeph_run_dir}/pid")
     kill "${original_pid}"
 
