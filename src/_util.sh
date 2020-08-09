@@ -20,6 +20,7 @@ function find_unused_display_num() {
 
     echo xephyr_display
 }
+export -f find_unused_display_num
 
 function generate_xeph_config() {
 
@@ -31,8 +32,8 @@ function generate_xeph_config() {
 lxc.mount.entry = /tmp/.X11-unix/X${ARG_DISPLAY_NUM} tmp/.X11-unix/X0 none bind,optional,create=file,ro
 lxc.environment = DISPLAY=:0
 EOF
-
 }
+export -f generate_xeph_config
 
 function run_xephyr() {
 
@@ -53,3 +54,4 @@ function run_xephyr() {
         sleep 1s
     done
 }
+export -f run_xephyr
