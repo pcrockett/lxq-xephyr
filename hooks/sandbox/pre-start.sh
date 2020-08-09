@@ -2,23 +2,10 @@
 set -Eeuo pipefail
 
 readonly DEPENDENCIES=(Xephyr)
-readonly SCRIPT_NAME=$(basename "${0}")
 
 for dep in "${DEPENDENCIES[@]}"; do
     installed "${dep}" || panic "Missing '${dep}'"
 done
-
-function show_usage() {
-    printf "Usage: %s\n" "${SCRIPT_NAME}" >&2
-    printf "Expected environment variables:\n"
-    printf "  LXQ_SANDBOX_NAME\n"
-    printf "  LXQ_TEMPLATE_NAME\n"
-}
-
-function show_usage_and_exit() {
-    show_usage
-    exit 1
-}
 
 is_set "${LXQ_SANDBOX_NAME+x}" || panic "Expected LXQ_SANDBOX_NAME environment variable."
 is_set "${LXQ_TEMPLATE_NAME+x}" || panic "Expected LXQ_TEMPLATE_NAME environment variable."
