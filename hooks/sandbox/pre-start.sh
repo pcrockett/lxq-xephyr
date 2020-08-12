@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-readonly DEPENDENCIES=(Xephyr)
-lxq_check_dependencies "${DEPENDENCIES[@]}"
+lxq_check_dependencies Xephyr
 
 lxq_is_set "${LXQ_SANDBOX_NAME+x}" || lxq_panic "Expected LXQ_SANDBOX_NAME environment variable."
 lxq_is_set "${LXQ_TEMPLATE_NAME+x}" || lxq_panic "Expected LXQ_TEMPLATE_NAME environment variable."
