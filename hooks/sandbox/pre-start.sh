@@ -2,13 +2,10 @@
 set -Eeuo pipefail
 
 readonly DEPENDENCIES=(Xephyr)
+lxq_check_dependencies "${DEPENDENCIES[@]}"
 
-for dep in "${DEPENDENCIES[@]}"; do
-    installed "${dep}" || panic "Missing '${dep}'"
-done
-
-is_set "${LXQ_SANDBOX_NAME+x}" || panic "Expected LXQ_SANDBOX_NAME environment variable."
-is_set "${LXQ_TEMPLATE_NAME+x}" || panic "Expected LXQ_TEMPLATE_NAME environment variable."
+lxq_is_set "${LXQ_SANDBOX_NAME+x}" || lxq_panic "Expected LXQ_SANDBOX_NAME environment variable."
+lxq_is_set "${LXQ_TEMPLATE_NAME+x}" || lxq_panic "Expected LXQ_TEMPLATE_NAME environment variable."
 
 sandbox_config_file="${LXQ_REPO_DIR}/sandboxes/${LXQ_SANDBOX_NAME}/config.d/${LXQ_XEPH_CONF_FILE_NAME}"
 template_config_file="${LXQ_REPO_DIR}/templates/${LXQ_TEMPLATE_NAME}/config.d/${LXQ_XEPH_CONF_FILE_NAME}"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-if is_set "${LXQ_SHORT_SUMMARY+x}"; then
+if lxq_is_set "${LXQ_SHORT_SUMMARY+x}"; then
     printf "\t\t\tSet up Xephyr for a template"
     exit 0
 fi
@@ -30,7 +30,7 @@ function parse_commandline() {
                 ARG_HELP="true"
             ;;
             *)
-                if is_set "${ARG_TEMPLATE_NAME+x}"; then
+                if lxq_is_set "${ARG_TEMPLATE_NAME+x}"; then
                     echo "Unrecognized argument: ${1}"
                     show_usage_and_exit
                 else
@@ -45,17 +45,17 @@ function parse_commandline() {
 
 parse_commandline "$@"
 
-if is_set "${ARG_HELP+x}"; then
+if lxq_is_set "${ARG_HELP+x}"; then
     show_usage_and_exit
 fi
 
-is_set "${ARG_TEMPLATE_NAME+x}" || panic "No template name specified."
+lxq_is_set "${ARG_TEMPLATE_NAME+x}" || lxq_panic "No template name specified."
 
 template_config_dir="${LXQ_REPO_DIR}/templates/${ARG_TEMPLATE_NAME}/config.d"
-test -d "${template_config_dir}" || panic "Template \"${ARG_TEMPLATE_NAME}\" does not exist."
+test -d "${template_config_dir}" || lxq_panic "Template \"${ARG_TEMPLATE_NAME}\" does not exist."
 
 xephyr_config="${template_config_dir}/${LXQ_XEPH_CONF_FILE_NAME}"
-test ! -f "${xephyr_config}" || panic "Template \"${ARG_TEMPLATE_NAME}\" has already been initialized."
+test ! -f "${xephyr_config}" || lxq_panic "Template \"${ARG_TEMPLATE_NAME}\" has already been initialized."
 
 # Just need to create the file to mark it as a xephyr template
 touch "${xephyr_config}"

@@ -15,7 +15,7 @@ function find_unused_display_num() {
     while [ -e "/tmp/.X11-unix/X${xephyr_display}" ]; do
         xephyr_display=$((xephyr_display+1))
         if [ "$xephyr_display" -ge 256 ]; then # TODO: What is the max display number?
-            panic "Unable to find unused display number."
+            lxq_panic "Unable to find unused display number."
         fi
     done
 
@@ -25,7 +25,7 @@ export -f find_unused_display_num
 
 function generate_xeph_config() {
 
-    is_set "${1+x}" || panic "Expecting Xephyr display number as parameter"
+    lxq_is_set "${1+x}" || lxq_panic "Expecting Xephyr display number as parameter"
     ARG_DISPLAY_NUM="${1}"
 
     cat << EOF
@@ -38,10 +38,10 @@ export -f generate_xeph_config
 
 function run_xephyr() {
 
-    is_set "${1+x}" || panic "Expecting Xephyr display number as first parameter"
+    lxq_is_set "${1+x}" || lxq_panic "Expecting Xephyr display number as first parameter"
     ARG_DISPLAY_NUM="${1}"
 
-    is_set "${2+x}" || panic "Expecting window title as second parameter"
+    lxq_is_set "${2+x}" || lxq_panic "Expecting window title as second parameter"
     ARG_WINDOW_TITLE="${2}"
 
     Xephyr -br -ac -noreset -screen "${LXQ_XEPH_SCREEN_SIZE}" -title "${ARG_WINDOW_TITLE}" ":${ARG_DISPLAY_NUM}" &
@@ -55,7 +55,7 @@ function run_xephyr() {
     while [ ! -e "/tmp/.X11-unix/X${ARG_DISPLAY_NUM}" ]; do
         attempts=$((attempts+1))
         if [ "$attempts" -gt 5 ]; then
-            panic "Unable to open Xephyr display."
+            lxq_panic "Unable to open Xephyr display."
         fi
         sleep 1s
     done
@@ -63,7 +63,7 @@ function run_xephyr() {
 export -f run_xephyr
 
 function stop_xephyr() {
-    is_set "${1+x}" || panic "Expecting window title as only parameter"
+    lxq_is_set "${1+x}" || lxq_panic "Expecting window title as only parameter"
     ARG_WINDOW_TITLE="${1}"
 
     xeph_run_dir="${LXQ_XEPH_RUN_DIR}/${ARG_WINDOW_TITLE}"
