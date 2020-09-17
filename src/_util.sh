@@ -30,6 +30,7 @@ function generate_xeph_config() {
 
     cat << EOF
 # Xephyr config
+lxc.mount.entry = tmpfs tmp tmpfs defaults # See https://github.com/lxc/lxc/issues/434
 lxc.mount.entry = /tmp/.X11-unix/X${ARG_DISPLAY_NUM} tmp/.X11-unix/X0 none bind,optional,create=file,ro
 lxc.environment = DISPLAY=:0
 EOF
